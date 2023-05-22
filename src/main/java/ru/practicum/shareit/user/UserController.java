@@ -21,7 +21,7 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@Valid @RequestBody UserDto user) {
-        log.info("Получен запрос POST /users.\n" + user.toString());
+        log.info("Получен запрос POST /users c user={}" + user.toString());
         return userService.create(user);
     }
 
