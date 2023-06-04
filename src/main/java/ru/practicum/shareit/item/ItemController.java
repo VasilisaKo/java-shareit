@@ -18,14 +18,14 @@ public class ItemController {
     public static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemDto create(@RequestHeader(name = USER_ID_HEADER) Integer userId,
+    public ItemDto create(@RequestHeader(USER_ID_HEADER) Integer userId,
                           @Valid @RequestBody ItemDto dto) {
         log.info("Получен запрос POST /items create с headers {}", userId);
         return itemService.create(dto, userId);
     }
 
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader(name = USER_ID_HEADER) int userId) {
+    public List<ItemDto> getAll(@RequestHeader(USER_ID_HEADER) int userId) {
         log.info("Получен запрос GET: /items getAll с headers {}", userId);
         return itemService.getAll(userId);
     }
@@ -37,7 +37,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{id}")
-    public ItemDto update(@RequestHeader(name = USER_ID_HEADER) int userId,
+    public ItemDto update(@RequestHeader(USER_ID_HEADER) int userId,
                           @PathVariable("id") int itemId,
                           @RequestBody ItemDto dto) {
         log.info("Получен запрос PATCH: /items update с ItemId={} с headers {}", itemId, userId);
