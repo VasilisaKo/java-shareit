@@ -34,14 +34,14 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handle(final CannotBookItemException e) {
-        log.warn("Исключение NoBookingNoCommentException {}", e.getMessage());
+        log.warn("Исключение CannotBookItemException {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handle(Exception e) {
-        log.warn("Ошибка ValidationException {}", e.getMessage());
+        log.warn("Ошибка MethodArgumentTypeMismatchException {}", e.getMessage());
         String exceptionType = "Unknown state: UNSUPPORTED_STATUS";
         String errorMessage = e.getMessage();
         return new ErrorResponse(exceptionType, errorMessage);

@@ -6,8 +6,8 @@ import org.springframework.util.StringUtils;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.exception.CannotBookItemException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
@@ -99,7 +99,7 @@ public class ItemService {
         List<Booking> booking = bookingRepository.findAllByBookerIdAndItemIdAndStatusNotAndStartBefore(userId, itemId,
                 Status.REJECTED, LocalDateTime.now());
         if (booking.isEmpty()) {
-            throw new CannotBookItemException("Пользователь не бронировал вещь");
+            throw new ValidationException("Пользователь не бронировал вещь");
         }
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User не найден"));
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item не найден"));
