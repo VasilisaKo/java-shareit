@@ -2,9 +2,12 @@ package ru.practicum.shareit.user;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.UserAlreadyExistException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
 
+    @Transactional
     public UserDto create(UserDto dto) {
         User user = UserMapper.toUser(dto);
         User newUser = userRepository.save(user);
@@ -20,22 +24,35 @@ public class UserService {
     }
 
     public List<UserDto> getAll() {
-        List<User> userList = userRepository.getAll();
+        List<User> userList = userRepository.findAll();
         return userList.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
-    public UserDto getById(int id) {
-        User user = userRepository.getById(id);
+    public UserDto getById(Integer id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         return UserMapper.toUserDto(user);
     }
 
-    public UserDto update(int id, UserDto dto) {
+    @Transactional
+    public UserDto update(Integer id, UserDto dto) {
         User user = UserMapper.toUser(dto);
-        User newUser = userRepository.update(id, user);
-        return UserMapper.toUserDto(newUser);
+        User updateUser = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id " + id + " не найден"));
+        if (userRepository.existsByEmailAndIdNot(user.getEmail(), id)) {
+            throw new UserAlreadyExistException("Пользователь с такой почтой уже существует");
+        }
+        if (user.getName() != null && !user.getName().isBlank()) {
+            updateUser.setName(user.getName());
+        }
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            updateUser.setEmail(user.getEmail());
+        }
+
+        User savedUser = userRepository.save(updateUser);
+        return UserMapper.toUserDto(savedUser);
     }
 
-    public void delete(int id) {
-        userRepository.delete(id);
+    public void delete(Integer id) {
+        userRepository.deleteById(id);
     }
 }
