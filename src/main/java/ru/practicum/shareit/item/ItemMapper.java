@@ -65,14 +65,12 @@ public class ItemMapper {
             if (bookingNextOld.isPresent()) {
                 bookingNext = BookingMapper.toBookingDtoForItem(bookingNextOld.get());
             }
-
         }
         return ItemResponseDto
                 .builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
-                //.owner(item.getOwner())
                 .owner(new ItemResponseDto.Owner(item.getOwner().getId(), item.getOwner().getName()))
                 .available(item.getAvailable())
                 .lastBooking(bookingLast)
@@ -81,6 +79,7 @@ public class ItemMapper {
                 .requestId(item.getRequestId())
                 .build();
     }
+
     public ItemDtoShort toItemDtoShort(Item item) {
         return ItemDtoShort
                 .builder()

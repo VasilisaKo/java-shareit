@@ -27,6 +27,7 @@ public class CommentMapper {
                 .item(item)
                 .build();
     }
+
     public static CommentResponseDto toCommentResponseDto(Comment comment) {
         return CommentResponseDto
                 .builder()
