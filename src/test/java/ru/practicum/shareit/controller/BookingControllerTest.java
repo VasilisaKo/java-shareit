@@ -223,7 +223,7 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)));
     }
 
-    /*@Test
+    @Test
     public void shouldNotGetBookingWithNegativeSize() throws Exception {
         Integer bookingId = 1;
         Integer userId = 1;
@@ -243,5 +243,5 @@ public class BookingControllerTest {
                         .header(USER_ID_HEADER, userId))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
-    }*/
+    }
 }

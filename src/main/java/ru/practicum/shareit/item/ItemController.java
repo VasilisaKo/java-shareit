@@ -63,7 +63,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentResponseDto addComment(@RequestHeader(USER_ID_HEADER) int userId,
-                                         @PathVariable("itemId") int itemId,
+                                         @PathVariable("itemId") @Positive int itemId,
                                          @Valid @RequestBody CommentDto comment) {
         log.info("Получен запрос к эндпоинту POST: /items{itemId}/comment addComment с headers {}, с itemId {}",
                 userId, itemId);

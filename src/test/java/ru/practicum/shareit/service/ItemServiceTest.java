@@ -118,7 +118,7 @@ class ItemServiceTest {
         assertNotNull(itemResponseDto);
     }
 
-    /*@Test
+    @Test
     public void testUpdate() {
 
         User user = new User();
@@ -136,13 +136,12 @@ class ItemServiceTest {
         Integer itemId = item.getId();
         Integer userId = user.getId();
 
-        Map<Object, Object> fields = new HashMap<>();
-        fields.put("name", "Updated Item Name");
+        ItemDto dto = ItemMapper.toItemDto(item);
 
-        ItemResponseDto itemResponseDto = itemService.update(itemId, fields, userId);
+        ItemResponseDto itemResponseDto = itemService.update(itemId, dto, userId);
 
         assertNotNull(itemResponseDto);
-    }*/
+    }
 
     @Test
     public void testDelete() {

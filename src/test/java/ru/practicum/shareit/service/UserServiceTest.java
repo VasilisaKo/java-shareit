@@ -3,9 +3,11 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -34,10 +36,8 @@ public class UserServiceTest {
         userDto.setEmail("test@test.com");
         userDto.setName("Test tes");
 
-        // When
         UserDto createdUserDto = userService.create(userDto);
 
-        // Then
         assertNotNull(createdUserDto.getId());
         assertEquals(userDto.getEmail(), createdUserDto.getEmail());
         assertEquals(userDto.getName(), createdUserDto.getName());
@@ -48,21 +48,21 @@ public class UserServiceTest {
         assertEquals(userDto.getName(), createdUser.getName());
     }
 
-    /*@Test
+    @Test
     public void testCreateUserDuplucateEmail() {
         UserDto userDto = new UserDto();
         userDto.setEmail("test@test.com");
-        userDto.setName("Test tes");
+        userDto.setName("Test test");
 
         UserDto userDtoDuplicate = new UserDto();
         userDto.setEmail("test@test.com");
-        userDto.setName("Test tes");
+        userDto.setName("Test test");
 
         UserDto createdUserDto = userService.create(userDto);
-        assertThrows(ConstraintViolationException.class, () -> {
+        assertThrows(DataIntegrityViolationException.class, () -> {
             userService.create(userDtoDuplicate);
         });
-    }*/
+    }
 
     @Test
     @Sql("/test-users.sql") // Загрузить тестовые данные из файла test-users.sql
@@ -92,7 +92,7 @@ public class UserServiceTest {
         assertEquals(user.getName(), userDto.getName());
     }
 
-    /*@Test
+    @Test
     public void testUpdate() {
         User user = new User();
         user.setEmail("test@test.com");
@@ -101,16 +101,15 @@ public class UserServiceTest {
 
         Integer userId = user.getId();
 
-        Map<Object, Object> fieldsToUpdate = new HashMap<>();
-        fieldsToUpdate.put("name", "Updated User");
-        fieldsToUpdate.put("email", "updated@example.com");
-
-        UserDto updatedUserDto = userService.update(userId, fieldsToUpdate);
+        UserDto dto = UserMapper.toUserDto(user);
+        dto.setName("Updated User");
+        dto.setEmail("updated@example.com");
+        UserDto updatedUserDto = userService.update(userId, dto);
 
         assertNotNull(updatedUserDto);
         assertEquals("Updated User", updatedUserDto.getName());
         assertEquals("updated@example.com", updatedUserDto.getEmail());
-    }*/
+    }
 
     @Test
     public void testDelete() {

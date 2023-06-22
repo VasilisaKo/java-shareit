@@ -59,7 +59,7 @@ public class ItemRequestControllerTest {
                 .build();
     }
 
-    /*@Test
+    @Test
     public void shouldNotPostItemRequestWithNegativeUser() throws Exception {
         String jsonItem = objectMapper.writeValueAsString(item);
         Integer userId = -99;
@@ -69,7 +69,7 @@ public class ItemRequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonItem))
                 .andExpect(status().is4xxClientError());
-    }*/
+    }
 
     @Test
     public void shouldNotPostItemRequestWithEmptyDescription() throws Exception {
@@ -114,7 +114,7 @@ public class ItemRequestControllerTest {
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
-    /*@Test
+    @Test
     public void shouldNotGetItemRequestWithFrom0Size0() throws Exception {
         Integer userId = 1;
 
@@ -139,7 +139,7 @@ public class ItemRequestControllerTest {
         mockMvc.perform(get("/requests/all?from=0&size=-1")
                         .header(USER_ID_HEADER, userId))
                 .andExpect(status().is4xxClientError());
-    }*/
+    }
 
     @Test
     public void shouldGetItemRequestWithFrom0Size20() throws Exception {
