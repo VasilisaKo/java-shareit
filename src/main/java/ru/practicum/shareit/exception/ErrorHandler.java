@@ -49,12 +49,14 @@ public class ErrorHandler {
         String errorMessage = e.getMessage();
         return new ErrorResponse(exceptionType, errorMessage);
     }
+
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleConstraintViolationException(final ConstraintViolationException e) {
         log.warn("Ошибка ConstraintViolationException {}", e.getMessage());
         return new ErrorResponse(e.getClass().getSimpleName(), e.getMessage());
     }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleSqlException(final DataIntegrityViolationException e) {
