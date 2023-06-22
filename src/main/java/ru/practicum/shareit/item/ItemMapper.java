@@ -1,12 +1,14 @@
 package ru.practicum.shareit.item;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingDtoForItem;
+import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -15,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@UtilityClass
 public class ItemMapper {
     public static ItemDto toItemDto(Item item) {
         return ItemDto
@@ -23,6 +26,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .requestId(item.getRequestId())
                 .build();
     }
 
@@ -33,10 +37,11 @@ public class ItemMapper {
                 .description(dto.getDescription())
                 .available(dto.getAvailable())
                 .owner(user)
+                .requestId(dto.getRequestId())
                 .build();
     }
 
-    public static ItemResponseDto toItemResponseDto(Item item, List<Booking> booking, List<Comment> comment) {
+    public static ItemResponseDto toItemResponseDto(Item item, List<Booking> booking, List<CommentResponseDto> comment) {
         BookingDtoForItem bookingLast = null;
         BookingDtoForItem bookingNext = null;
         LocalDateTime time = LocalDateTime.now();
@@ -67,11 +72,23 @@ public class ItemMapper {
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
-                .owner(item.getOwner())
+                //.owner(item.getOwner())
+                .owner(new ItemResponseDto.Owner(item.getOwner().getId(), item.getOwner().getName()))
                 .available(item.getAvailable())
                 .lastBooking(bookingLast)
                 .nextBooking(bookingNext)
                 .comments(comment)
+                .requestId(item.getRequestId())
+                .build();
+    }
+    public ItemDtoShort toItemDtoShort(Item item) {
+        return ItemDtoShort
+                .builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.getAvailable())
+                .requestId(item.getRequestId())
                 .build();
     }
 }

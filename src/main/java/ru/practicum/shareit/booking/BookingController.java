@@ -2,17 +2,21 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 
 @RestController
 @RequestMapping(path = "/bookings")
 @Slf4j
+@Validated
 @AllArgsConstructor
 public class BookingController {
     private final BookingService bookingService;
@@ -42,16 +46,22 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingResponseDto> getAllReservation(@RequestHeader(USER_ID_HEADER) Integer userId,
-                                                      @RequestParam(value = "state", required = false) State state) {
+    public List<BookingResponseDto> getAllReservation
+            (@RequestHeader(USER_ID_HEADER) Integer userId,
+             @RequestParam(value = "state", defaultValue = "ALL") State state,
+             @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+             @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         log.info("Получен запрос к эндпоинту GET/bookings getAllReservation с state {}", state);
-        return bookingService.getAllReserve(userId, state, "booker");
+        return bookingService.getAllReserve(userId, state, "booker", from, size);
     }
 
     @GetMapping("/owner")
-    public List<BookingResponseDto> getReservationForOwner(@RequestHeader(USER_ID_HEADER) Integer userId,
-                                                           @RequestParam(value = "state", required = false) State state) {
+    public List<BookingResponseDto> getReservationForOwner
+            (@RequestHeader(USER_ID_HEADER) Integer userId,
+             @RequestParam(value = "state", defaultValue = "ALL") State state,
+             @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+             @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         log.info("Получен запрос к эндпоинту GET/bookings getAllReservation с state {}", state);
-        return bookingService.getAllReserve(userId, state, "owner");
+        return bookingService.getAllReserve(userId, state, "owner", from, size);
     }
 }

@@ -31,5 +31,6 @@ public class Item {
     @Column(name = "available", nullable = false)
     private Boolean available;
 
-    //private ItemRequest request;
+    @Column(name = "request")
+    private Integer requestId;
 }
