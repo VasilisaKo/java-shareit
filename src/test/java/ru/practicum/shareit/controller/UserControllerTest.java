@@ -156,10 +156,4 @@ public class UserControllerTest {
         mockMvc.perform(delete("/users/1"))
                 .andExpect(status().isOk());
     }
-
-    /*@Test
-    public void shouldDeleteUserNegativeUser() throws Exception {
-        mockMvc.perform(delete("/users/-1"))
-                .andExpect(status().is4xxClientError());
-    }*/
 }

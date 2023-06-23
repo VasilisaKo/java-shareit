@@ -105,17 +105,4 @@ public class CommentControllerTest {
                         .content(jsonCommentDto))
                 .andExpect(status().is4xxClientError());
     }
-
-    /*@Test
-    public void shouldNotCreateCommentWithNegativeItem() throws Exception {
-        when(itemService.createComment(any(), anyInt(), anyInt())).thenReturn(commentResponseDto);
-
-        String jsonCommentDto = objectMapper.writeValueAsString(commentDto);
-
-        mockMvc.perform(post("/items/{itemId}/comment", -1)
-                        .header(USER_ID_HEADER, booker.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonCommentDto))
-                .andExpect(status().is4xxClientError());
-    }*/
 }
