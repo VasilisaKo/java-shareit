@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BookingController {
     private final BookingService bookingService;
-    
+
     @PostMapping
     public BookingResponseDto addReservation(@RequestHeader(HttpHeaders.USER_ID) int userId,
                                              @Valid @RequestBody BookingDto dto) {

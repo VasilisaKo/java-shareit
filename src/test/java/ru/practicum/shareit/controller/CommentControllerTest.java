@@ -33,7 +33,7 @@ public class CommentControllerTest {
     private final MockMvc mockMvc;
 
     private final ObjectMapper objectMapper;
-    
+
     @MockBean
     private ItemService itemService;
 

@@ -20,10 +20,10 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
-    
+
     @PostMapping
     public ItemResponseDto create(@RequestHeader(HttpHeaders.USER_ID) Integer userId,
-                          @Valid @RequestBody ItemDto dto) {
+                                  @Valid @RequestBody ItemDto dto) {
         log.info("Получен запрос POST /items create с headers {}", userId);
         return itemService.create(dto, userId);
     }
@@ -43,8 +43,8 @@ public class ItemController {
 
     @PatchMapping("/{id}")
     public ItemResponseDto update(@RequestHeader(HttpHeaders.USER_ID) int userId,
-                          @PathVariable("id") int itemId,
-                          @RequestBody ItemDto dto) {
+                                  @PathVariable("id") int itemId,
+                                  @RequestBody ItemDto dto) {
         log.info("Получен запрос PATCH: /items update с ItemId={} с headers {}", itemId, userId);
         return itemService.update(itemId, dto, userId);
     }

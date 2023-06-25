@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemRequestController {
     private final ItemRequestService requestService;
-    
+
     @PostMapping
     public ItemRequestResponseDto create(@RequestHeader(HttpHeaders.USER_ID) @Positive Integer userId,
                                          @Valid @RequestBody ItemRequestDto dto) {
