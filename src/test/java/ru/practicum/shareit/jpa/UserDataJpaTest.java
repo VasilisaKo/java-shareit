@@ -33,7 +33,7 @@ public class UserDataJpaTest {
     }
 
     @Test
-    void testUseWithDuplicateEmail() {
+    void testUseWithDuplicateEmail() throws Exception {
         User user = new User(2, "John Doe", "johndoe@example.com");
         User savedUser = userRepository.save(user);
 
@@ -44,6 +44,8 @@ public class UserDataJpaTest {
         assertThat(retrievedUser).isEqualTo(savedUser);
 
         assertThrows(DataIntegrityViolationException.class, () -> {
+            User userDuplicate = new User(3, "New DoeS", "johndoe@example.com");
+            User savedUserDuplicate = userRepository.save(userDuplicate);
         });
     }
 }
