@@ -49,7 +49,7 @@ public class BookingControllerTest {
     private BookingResponseDto bookingResponseDto;
     private LocalDateTime start;
     private LocalDateTime end;
-    
+
     @MockBean
     private BookingService bookingService;
 
