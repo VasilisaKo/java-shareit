@@ -29,9 +29,7 @@ public class BookingDataJpaTest {
     private BookingRepository bookingRepository;
 
     @Test
-    void testBookingDto() throws Exception {
-        LocalDateTime time = LocalDateTime.now().withNano(000000);
-
+    void testBookingDto() {
         User user = new User(1, "John Doe", "johndoe@example.com");
         User savedUser = userRepository.save(user);
 

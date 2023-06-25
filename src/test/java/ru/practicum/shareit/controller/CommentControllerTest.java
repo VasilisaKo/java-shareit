@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.HttpHeaders;
 import ru.practicum.shareit.item.ItemController;
 import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -32,29 +33,26 @@ public class CommentControllerTest {
     private final MockMvc mockMvc;
 
     private final ObjectMapper objectMapper;
-    public static final String USER_ID_HEADER = "X-Sharer-User-Id";
-
+    
     @MockBean
     private ItemService itemService;
 
 
     private User booker;
-    private User owner;
     private Item item;
     private CommentDto commentDto;
     private CommentResponseDto commentResponseDto;
-    LocalDateTime start;
-    LocalDateTime end;
+    private LocalDateTime start;
+    private LocalDateTime end;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         booker = new User(1, "user", "user@user.com");
 
-        owner = new User(2, "newUser", "newUser@user.com");
+        User owner = new User(2, "newUser", "newUser@user.com");
 
         item = new Item(1, "Дрель", "Простая дрель", owner, true, null);
 
-        Integer bookerId = 2;
         start = LocalDateTime.now().plusMinutes(1);
         end = start.plusDays(1);
 
@@ -79,7 +77,7 @@ public class CommentControllerTest {
         String jsonCommentDto = objectMapper.writeValueAsString(commentDto);
 
         mockMvc.perform(post("/items/{itemId}/comment", item.getId())
-                        .header(USER_ID_HEADER, booker.getId())
+                        .header(HttpHeaders.USER_ID, booker.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonCommentDto))
                 .andExpect(status().isOk())
@@ -100,7 +98,7 @@ public class CommentControllerTest {
         String jsonCommentDto = objectMapper.writeValueAsString(commentDto);
 
         mockMvc.perform(post("/items/{itemId}/comment", item.getId())
-                        .header(USER_ID_HEADER, booker.getId())
+                        .header(HttpHeaders.USER_ID, booker.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonCommentDto))
                 .andExpect(status().is4xxClientError());

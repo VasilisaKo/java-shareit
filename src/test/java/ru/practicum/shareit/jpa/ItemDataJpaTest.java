@@ -9,8 +9,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDateTime;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -26,9 +24,7 @@ public class ItemDataJpaTest {
     private UserRepository userRepository;
 
     @Test
-    void testItemRequestDto() throws Exception {
-        LocalDateTime time = LocalDateTime.now().withNano(000000);
-
+    void testItemRequestDto() {
         User user = new User(1, "John Doe", "johndoe@example.com");
         User savedUser = userRepository.save(user);
 

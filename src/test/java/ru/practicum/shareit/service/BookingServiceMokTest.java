@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.booking.*;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
@@ -35,32 +34,24 @@ public class BookingServiceMokTest {
     private User owner;
     private Item item;
     private Booking booking;
-    private BookingResponseDto bookingResponseDto;
-    private List<Booking> bookings;
+    private List<Booking> bookingList;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         booker = new User(1, "user", "user@user.com");
 
         owner = new User(2, "newUser", "newUser@user.com");
 
         item = new Item(1, "Дрель", "Простая дрель", owner, true, null);
 
-        LocalDateTime start = LocalDateTime.now().plusMinutes(1).withNano(000);
-        LocalDateTime end = start.plusDays(1).withNano(000);
+        LocalDateTime start = LocalDateTime.now().plusMinutes(1).withNano(0);
+        LocalDateTime end = start.plusDays(1).withNano(0);
 
         booking = new Booking(1, item, start, end, booker, null);
 
-        bookingResponseDto = BookingResponseDto
-                .builder()
-                .id(booking.getId())
-                .status(Status.WAITING)
-                .start(booking.getStart())
-                .end(booking.getEnd())
-                .item(new BookingResponseDto.Item(item.getId(), item.getName()))
-                .booker(new BookingResponseDto.Booker(booker.getId(), booker.getName()))
-                .build();
-
+        bookingList = new ArrayList<>();
+        bookingList.add(booking);
+        bookingList.add(booking);
     }
 
 
@@ -72,10 +63,7 @@ public class BookingServiceMokTest {
         int from = 0;
         int size = 10;
 
-        User user = new User();
         List<Booking> bookingList = new ArrayList<>();
-        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
-
         Mockito.when(bookingRepository.findAllByOwnerIdAndEndBeforeOrderByStartDesc(anyInt(), any(), any()))
                 .thenReturn(bookingList);
 
@@ -91,13 +79,6 @@ public class BookingServiceMokTest {
         String typeUser = "owner";
         int from = 0;
         int size = 10;
-
-        User user = new User();
-        List<Booking> bookingList = new ArrayList<>();
-        bookingList.add(booking);
-        bookingList.add(booking);
-
-        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
 
         Mockito.when(bookingRepository.findAllByOwnerIdAndStartAfterOrderByStartDesc(anyInt(), any(), any()))
                 .thenReturn(bookingList);
@@ -115,13 +96,6 @@ public class BookingServiceMokTest {
         int from = 0;
         int size = 10;
 
-        User user = new User();
-        List<Booking> bookingList = new ArrayList<>();
-        bookingList.add(booking);
-        bookingList.add(booking);
-
-        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
-
         Mockito.when(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(anyInt(), any(), any()))
                 .thenReturn(bookingList);
 
@@ -138,13 +112,6 @@ public class BookingServiceMokTest {
         int from = 0;
         int size = 10;
 
-        User user = new User();
-        List<Booking> bookingList = new ArrayList<>();
-        bookingList.add(booking);
-        bookingList.add(booking);
-
-        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
-
         Mockito.when(bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(anyInt(), any(), any(), any()))
                 .thenReturn(bookingList);
 
@@ -160,13 +127,6 @@ public class BookingServiceMokTest {
         String typeUser = "booker";
         int from = 0;
         int size = 10;
-
-        User user = new User();
-        List<Booking> bookingList = new ArrayList<>();
-        bookingList.add(booking);
-        bookingList.add(booking);
-
-        PageRequest page = PageRequest.of(from > 0 ? from / size : 0, size);
 
         Mockito.when(bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(anyInt(), any(), any()))
                 .thenReturn(bookingList);

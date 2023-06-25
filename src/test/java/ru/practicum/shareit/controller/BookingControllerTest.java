@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.HttpHeaders;
 import ru.practicum.shareit.booking.BookingController;
 import ru.practicum.shareit.booking.BookingService;
 import ru.practicum.shareit.booking.Status;
@@ -44,28 +45,24 @@ public class BookingControllerTest {
     private final ObjectMapper objectMapper;
 
     private User booker;
-    private User owner;
-
-    private Item item;
     private BookingDto bookingDto;
     private BookingResponseDto bookingResponseDto;
-    LocalDateTime start;
-    LocalDateTime end;
-    public static final String USER_ID_HEADER = "X-Sharer-User-Id";
-
+    private LocalDateTime start;
+    private LocalDateTime end;
+    
     @MockBean
     private BookingService bookingService;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         booker = new User(1, "user", "user@user.com");
 
-        owner = new User(2, "newUser", "newUser@user.com");
+        User owner = new User(2, "newUser", "newUser@user.com");
 
-        item = new Item(1, "Дрель", "Простая дрель", owner, true, null);
+        Item item = new Item(1, "Дрель", "Простая дрель", owner, true, null);
 
-        start = LocalDateTime.now().plusMinutes(1).withNano(000);
-        end = start.plusDays(1).withNano(000);
+        start = LocalDateTime.now().plusMinutes(1).withNano(0);
+        end = start.plusDays(1).withNano(0);
 
         bookingDto = new BookingDto(1, 1, start, end, null);
 
@@ -88,7 +85,7 @@ public class BookingControllerTest {
         String jsonBooking = objectMapper.writeValueAsString(bookingDto);
 
         mockMvc.perform(post("/bookings")
-                        .header(USER_ID_HEADER, booker.getId())
+                        .header(HttpHeaders.USER_ID, booker.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonBooking))
                 .andExpect(status().isOk())
@@ -110,7 +107,7 @@ public class BookingControllerTest {
         when(bookingService.getById(anyInt(), anyInt())).thenReturn(bookingResponseDto);
 
         mockMvc.perform(get("/bookings/{id}", bookingId)
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
@@ -132,7 +129,7 @@ public class BookingControllerTest {
         when(bookingService.setApproved(anyInt(), anyInt(), anyBoolean())).thenReturn(bookingResponseDto);
 
         mockMvc.perform(patch("/bookings/{bookingId}?approved=true", bookingId)
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("APPROVED"));
     }
@@ -146,7 +143,7 @@ public class BookingControllerTest {
                 .thenThrow(new NotFoundException("Booking не найден"));
 
         mockMvc.perform(patch("/bookings/{bookingId}?approved=true", bookingId)
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.error", is("Booking не найден")));
     }
@@ -160,7 +157,7 @@ public class BookingControllerTest {
                 .thenThrow(new CannotBookItemException("Статус APPROVED уже установлен"));
 
         mockMvc.perform(patch("/bookings/{bookingId}?approved=true", bookingId)
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.error", is("Статус APPROVED уже установлен")));
 
@@ -175,7 +172,7 @@ public class BookingControllerTest {
         when(bookingService.setApproved(anyInt(), anyInt(), anyBoolean())).thenReturn(bookingResponseDto);
 
         mockMvc.perform(patch("/bookings/{bookingId}?approved=false", bookingId)
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("REJECTED"));
 
@@ -190,7 +187,7 @@ public class BookingControllerTest {
                 .thenThrow(new NotFoundException("Booking не найден"));
 
         mockMvc.perform(patch("/bookings/{bookingId}?approved=true", bookingId)
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.error", is("Booking не найден")));
     }
@@ -203,7 +200,7 @@ public class BookingControllerTest {
                 .thenReturn(List.of(bookingResponseDto, bookingResponseDto, bookingResponseDto));
 
         mockMvc.perform(get("/bookings")
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)));
@@ -217,7 +214,7 @@ public class BookingControllerTest {
                 .thenReturn(List.of(bookingResponseDto, bookingResponseDto));
 
         mockMvc.perform(get("/bookings/owner")
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
@@ -229,7 +226,7 @@ public class BookingControllerTest {
         Integer userId = 1;
 
         mockMvc.perform(get("/bookings/owner?size=-1&from=0", bookingId)
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
     }
@@ -240,7 +237,7 @@ public class BookingControllerTest {
         Integer userId = 1;
 
         mockMvc.perform(get("/bookings/owner?size=10&from=-1", bookingId)
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
     }

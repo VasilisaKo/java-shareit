@@ -37,7 +37,7 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    UserDto userDto = new UserDto(1, "user", "user@user.com");
+    private UserDto userDto = new UserDto(1, "user", "user@user.com");
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext) {

@@ -26,8 +26,8 @@ public class ItemRequestDataJpaTest {
     private UserRepository userRepository;
 
     @Test
-    void testItemRequestDto() throws Exception {
-        LocalDateTime time = LocalDateTime.now().withNano(000000);
+    void testItemRequestDto() {
+        LocalDateTime time = LocalDateTime.now().withNano(0);
 
         User user = new User(1, "John Doe", "johndoe@example.com");
         User savedUser = userRepository.save(user);

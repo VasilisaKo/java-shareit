@@ -16,7 +16,6 @@ import ru.practicum.shareit.item.*;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -38,10 +37,8 @@ class ItemServiceTest {
 
     private final BookingRepository bookingRepository;
 
-    private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
-    private final UserService userService;
     private final ItemService itemService;
 
     @Test

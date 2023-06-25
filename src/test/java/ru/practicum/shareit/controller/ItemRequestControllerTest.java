@@ -10,11 +10,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.HttpHeaders;
 import ru.practicum.shareit.request.ItemRequestController;
 import ru.practicum.shareit.request.ItemRequestService;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
-import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,19 +35,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ItemRequestControllerTest {
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
-    private User user;
-    private User userTwo;
+
     private ItemRequestDto item;
     private ItemRequestResponseDto itemResponse;
-    public static final String USER_ID_HEADER = "X-Sharer-User-Id";
     @MockBean
     private ItemRequestService itemRequestService;
 
     @BeforeEach
-    public void setUp() throws Exception {
-        user = new User(1, "user", "user@user.com");
-
-        userTwo = new User(2, "userNew", "userNew@userNew.com");
+    public void setUp() {
 
         item = new ItemRequestDto("Хотел бы воспользоваться щёткой для обуви");
 
@@ -65,7 +60,7 @@ public class ItemRequestControllerTest {
         Integer userId = -99;
 
         mockMvc.perform(post("/requests")
-                        .header(USER_ID_HEADER, userId)
+                        .header(HttpHeaders.USER_ID, userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonItem))
                 .andExpect(status().is4xxClientError());
@@ -78,7 +73,7 @@ public class ItemRequestControllerTest {
         Integer userId = 1;
 
         mockMvc.perform(post("/requests")
-                        .header(USER_ID_HEADER, userId)
+                        .header(HttpHeaders.USER_ID, userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonItem))
                 .andExpect(status().is4xxClientError());
@@ -98,7 +93,7 @@ public class ItemRequestControllerTest {
         when(itemRequestService.getForUser(anyInt())).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/requests")
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
@@ -109,7 +104,7 @@ public class ItemRequestControllerTest {
         when(itemRequestService.getForUser(anyInt())).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/requests/all")
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
@@ -119,7 +114,7 @@ public class ItemRequestControllerTest {
         Integer userId = 1;
 
         mockMvc.perform(get("/requests/all?from=0&size=0")
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -128,7 +123,7 @@ public class ItemRequestControllerTest {
         Integer userId = 1;
 
         mockMvc.perform(get("/requests/all?from=-1&size=20")
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -137,7 +132,7 @@ public class ItemRequestControllerTest {
         Integer userId = 1;
 
         mockMvc.perform(get("/requests/all?from=0&size=-1")
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -147,7 +142,7 @@ public class ItemRequestControllerTest {
         when(itemRequestService.getOtherUsers(anyInt(), anyInt(), anyInt())).thenReturn(List.of(itemResponse));
 
         mockMvc.perform(get("/requests/all?from=0&size=20")
-                        .header(USER_ID_HEADER, userId))
+                        .header(HttpHeaders.USER_ID, userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }
@@ -160,7 +155,7 @@ public class ItemRequestControllerTest {
         when(itemRequestService.create(any(), anyInt())).thenReturn(itemResponse);
 
         mockMvc.perform(post("/requests")
-                        .header(USER_ID_HEADER, userId)
+                        .header(HttpHeaders.USER_ID, userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonItem))
                 .andExpect(status().isOk())
@@ -174,7 +169,7 @@ public class ItemRequestControllerTest {
         when(itemRequestService.getRequestById(anyInt(), anyInt())).thenReturn(itemResponse);
 
         mockMvc.perform(get("/requests/{requestId}", 1)
-                        .header(USER_ID_HEADER, 1))
+                        .header(HttpHeaders.USER_ID, 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.description").value("Хотел бы воспользоваться щёткой для обуви"))
