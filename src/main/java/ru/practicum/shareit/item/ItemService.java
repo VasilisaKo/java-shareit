@@ -6,9 +6,10 @@ import org.springframework.util.StringUtils;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.Status;
+import ru.practicum.shareit.exception.CannotBookItemException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -34,11 +35,11 @@ public class ItemService {
     private final UserService service;
 
     @Transactional
-    public ItemDto create(ItemDto dto, int userId) {
+    public ItemResponseDto create(ItemDto dto, int userId) {
         User user = UserMapper.toUser(service.getById(userId));
         Item item = ItemMapper.toItem(dto, user);
         Item newItem = itemRepository.save(item);
-        return ItemMapper.toItemDto(newItem);
+        return ItemMapper.toItemResponseDto(newItem, new ArrayList<>(), new ArrayList<>());
     }
 
     public List<ItemResponseDto> getAll(int userId) {
@@ -47,21 +48,23 @@ public class ItemService {
         List<Integer> itemIdList = itemList.stream().map(Item::getId).collect(Collectors.toList());
 
         List<Booking> booking = bookingRepository.findAllByOwnerIdAndItemIn(userId, itemIdList);
-        List<Comment> comment = commentRepository.findAllByAndAuthorName(user.getName());
-
+        List<CommentResponseDto> commentResponseDto = commentRepository.findAllByAndAuthorName(user.getName())
+                .stream()
+                .map(CommentMapper::toCommentResponseDto).collect(Collectors.toList());
         return itemList.stream()
-                .map(item -> ItemMapper.toItemResponseDto(item, booking, comment)).collect(Collectors.toList());
+                .map(item -> ItemMapper.toItemResponseDto(item, booking, commentResponseDto)).collect(Collectors.toList());
     }
 
     public ItemResponseDto getById(int itemId, int userId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item не найден"));
         List<Booking> booking = bookingRepository.findAllByItemIdAndOwnerId(itemId, userId);
-        List<Comment> comment = commentRepository.findAllByItemId(itemId);
-
-        return ItemMapper.toItemResponseDto(item, booking, comment);
+        List<CommentResponseDto> commentResponseDto = commentRepository.findAllByItemId(itemId)
+                .stream()
+                .map(CommentMapper::toCommentResponseDto).collect(Collectors.toList());
+        return ItemMapper.toItemResponseDto(item, booking, commentResponseDto);
     }
 
-    public ItemDto update(int id, ItemDto dto, int userId) {
+    public  ItemResponseDto update(int id, ItemDto dto, int userId) {
         User user = UserMapper.toUser(service.getById(userId));
         Item item = ItemMapper.toItem(dto, user);
         Item updateItem = itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item не найден"));
@@ -78,7 +81,7 @@ public class ItemService {
                 updateItem.setDescription(item.getDescription());
             }
             Item newItem = itemRepository.save(updateItem);
-            return ItemMapper.toItemDto(newItem);
+            return ItemMapper.toItemResponseDto(newItem, new ArrayList<>(), new ArrayList<>());
         }
     }
 
@@ -86,24 +89,25 @@ public class ItemService {
         itemRepository.deleteById(id);
     }
 
-    public List<ItemDto> search(String text) {
+    public List<ItemResponseDto> search(String text) {
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
         List<Item> itemList = itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(
                 text, text, true);
-        return itemList.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemList.stream().map(item -> ItemMapper.toItemResponseDto(item, new ArrayList<>(), new ArrayList<>()))
+                .collect(Collectors.toList());
     }
 
-    public Comment addComment(CommentDto dto, int userId, int itemId) {
-        List<Booking> booking = bookingRepository.findAllByBookerIdAndItemIdAndStatusNotAndStartBefore(userId, itemId,
-                Status.REJECTED, LocalDateTime.now());
+    public CommentResponseDto createComment(CommentDto dto, Integer userId, Integer itemId) {
+        List<Booking> booking = bookingRepository.findAllByBookerIdAndItemIdAndStatusNotAndStartBefore(userId, itemId, Status.REJECTED, LocalDateTime.now());
         if (booking.isEmpty()) {
-            throw new ValidationException("Пользователь не бронировал вещь");
+            throw new CannotBookItemException("Вы не можете оставить отзыв, т.к. не бронировали вещь");
         }
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User не найден"));
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item не найден"));
         Comment comment = CommentMapper.toComment(dto, user, item);
-        return commentRepository.save(comment);
+
+        return CommentMapper.toCommentResponseDto(commentRepository.save(comment));
     }
 }

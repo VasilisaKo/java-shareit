@@ -8,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.shareit.booking.dto.BookingDtoForItem;
 
-import java.util.List;
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,30 +19,23 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ItemResponseDto {
+public class CommentResponseDto {
     private Integer id;
 
-    private String name;
+    @NotBlank(message = "Отзыв не может быть пустым")
+    private String text;
 
-    private String description;
+    private Item item;
 
-    private Owner owner;
+    private String authorName;
 
-    private Boolean available;
-
-    private Integer requestId;
-
-    private BookingDtoForItem lastBooking;
-
-    private BookingDtoForItem nextBooking;
-
-    private List<CommentResponseDto> comments;
+    private LocalDateTime created;
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Owner {
+    public static class Item {
         private int id;
         private String name;
     }

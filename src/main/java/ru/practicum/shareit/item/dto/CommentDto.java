@@ -2,21 +2,27 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class CommentDto {
     private Integer id;
 
-    @NotBlank(message = "Комментарий не должен быть пустым")
+    @NotBlank(message = "Отзыв не может быть пустым")
     private String text;
 
     private Item item;
@@ -24,4 +30,5 @@ public class CommentDto {
     private String authorName;
 
     private LocalDateTime created;
+
 }

@@ -4,13 +4,17 @@ import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 @Builder
 @Entity
 @Table(name = "bookings")

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.dto;
+package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotBlank;
-
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -17,7 +15,15 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ItemRequestDto {
-    @NotBlank(message = "Описание текста запроса не может быть пустым")
+public class ItemDtoShort {
+
+    private Integer id;
+
+    private String name;
+
     private String description;
+
+    private Boolean available;
+
+    private Integer requestId;
 }

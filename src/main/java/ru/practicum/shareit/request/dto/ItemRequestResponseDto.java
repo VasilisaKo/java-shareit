@@ -7,8 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import ru.practicum.shareit.item.dto.ItemDtoShort;
 
-import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,7 +20,9 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ItemRequestDto {
-    @NotBlank(message = "Описание текста запроса не может быть пустым")
+public class ItemRequestResponseDto {
+    private Integer id;
     private String description;
+    private LocalDateTime created;
+    private List<ItemDtoShort> items = new ArrayList<>();
 }
