@@ -13,7 +13,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-
 @RestController
 @RequestMapping(path = "/bookings")
 @Slf4j
@@ -24,15 +23,15 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> addReservation(@RequestHeader(HttpHeaders.USER_ID) int userId,
-                                             @Valid @RequestBody BookingRequestDto requestDto) {
+                                                 @Valid @RequestBody BookingRequestDto requestDto) {
         log.info("Получен запрос к эндпоинту POST/bookings addReservation с headers {}", userId);
         return bookingClient.create(userId, requestDto);
     }
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> updateStatus(@RequestHeader(HttpHeaders.USER_ID) Integer userId,
-                                           @PathVariable("bookingId") Integer bookingId,
-                                           @RequestParam("approved") Boolean approved) {
+                                               @PathVariable("bookingId") Integer bookingId,
+                                               @RequestParam("approved") Boolean approved) {
         log.info("Получен запрос к эндпоинту PATCH/bookings updateStatus с headers {}, с bookingId {}, статус {}",
                 userId, bookingId, approved);
         return bookingClient.setApproved(userId, bookingId, approved);
@@ -40,7 +39,7 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> getById(@RequestHeader(HttpHeaders.USER_ID) Integer userId,
-                                      @PathVariable("bookingId") Integer bookingId) {
+                                          @PathVariable("bookingId") Integer bookingId) {
         log.info("Получен запрос к эндпоинту GET/bookings getById с headers {}, с bookingId {}", userId, bookingId);
         return bookingClient.getById(userId, bookingId);
     }
@@ -58,9 +57,9 @@ public class BookingController {
 
     @GetMapping("/owner")
     public ResponseEntity<Object> getReservationForOwner(@RequestHeader(HttpHeaders.USER_ID) Integer userId,
-                                                           @RequestParam(value = "state", defaultValue = "ALL") String stateParam,
-                                                           @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
-                                                           @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
+                                                         @RequestParam(value = "state", defaultValue = "ALL") String stateParam,
+                                                         @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Integer from,
+                                                         @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         log.info("Получен запрос к эндпоинту GET/bookings getAllReservation с state {}", stateParam);
         State state = State.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
