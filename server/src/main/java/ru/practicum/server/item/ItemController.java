@@ -9,8 +9,6 @@ import ru.practicum.server.item.dto.CommentResponseDto;
 import ru.practicum.server.item.dto.ItemDto;
 import ru.practicum.server.item.dto.ItemResponseDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
