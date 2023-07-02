@@ -63,6 +63,7 @@ public class ErrorHandler {
         log.warn("Ошибка Throwable {}", e.getMessage());
         return new ErrorResponse(e.getMessage(), e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
