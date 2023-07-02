@@ -11,7 +11,6 @@ import ru.practicum.gateway.booking.dto.BookingRequestDto;
 import ru.practicum.gateway.booking.dto.State;
 import ru.practicum.gateway.client.BaseClient;
 
-
 import java.util.Map;
 
 @Service
