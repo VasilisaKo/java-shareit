@@ -42,5 +42,4 @@ public class UserClient extends BaseClient {
     public ResponseEntity<Object> delete(Integer userId) {
         return delete("/" + userId);
     }
-
 }
